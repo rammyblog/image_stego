@@ -1,0 +1,7 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_DB=stego_message
+POSTGRES_USER=rammy
+POSTGRES_PASSWORD=fnURYmvvUVury*J5Zm8Guju

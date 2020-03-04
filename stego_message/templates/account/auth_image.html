@@ -1,0 +1,46 @@
+{% extends "account/base.html" %}
+{% load i18n %}
+{% load static i18n %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{% trans "Authentication Image" %}{% endblock %}
+
+{% block inner %}
+<div class="projects-clean">
+  <div class="container">
+    <form method="POST">
+      {% csrf_token %}
+      <div class="intro">
+          <h2 class="text-center">Authentication Image</h2>
+          <p class="text-center">This image will be used to authenticate you whenever you try to login. Ensure you get proper lightning when taking the picture</p>
+      </div>
+      <div class="row projects camera">
+          <div class="col-sm-6 col-lg-3 item">
+            <img class="img-fluid" src="assets/img/desk.jpg">
+              <video id="video">Video stream not available.</video>
+              <h6 class="name">Click the button below to take a Photo</h6>
+              <p class="description"></p><button id='startbutton' class="btn btn-primary" type="button">Take photo</button>
+              <p class="text-left">If you are not satisfied with what you have in the second column, Kindly Retake the picture</p>
+          </div>
+          <div class="col-sm-6 col-lg-3 item output">
+            <canvas id="canvas"> </canvas>
+            <img id='photo' class="img-fluid"  name='autentication_image' alt="The screen capture will appear in this box." >
+            <input type="hidden" name="autentication_image" id="auth_image_64">
+            <h3 class="name">Photo</h3>
+              <p class="description"></p><button class="btn btn-success" type="submit">Proceed</button></div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}
+
+
+{% block javascript %}
+  {{block.super}}
+
+<script src="{% static 'js/takePhoto.js' %}"></script>
+
+
+{% endblock javascript %}
