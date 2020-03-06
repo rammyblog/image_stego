@@ -29,3 +29,5 @@ class UserCreationForm(forms.UserCreationForm):
 
         raise ValidationError(self.error_messages["duplicate_username"])
 
+
+

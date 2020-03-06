@@ -13,6 +13,14 @@ from .models import UserProfile
 
 from django.http import HttpResponse
 
+from functools import partial
+
+from django.contrib.auth.decorators import login_required
+from django_otp.forms import OTPTokenForm
+from django_otp.plugins.otp_totp.models import TOTPDevice
+from django_otp import user_has_device
+from .qrcode_generator import barcodeGenerator
+
 
 def userRegistration(request):
 
@@ -38,6 +46,22 @@ def userRegistration(request):
     return render(request, 'account/signup.html', context)
 
 
+def get_user_totp_device(request):
+    user = request.user
+    try:
+        device = TOTPDevice.objects.get(user=user)
+    except TOTPDevice.DoesNotExist:
+        device = TOTPDevice.objects.create(user=user, confirmed=False, name='Google Auth')
+    except TOTPDevice.MultipleObjectsReturned:
+        device = TOTPDevice.objects.filter(user=user, confirmed=True)[:1]
+
+    url = device.config_url
+    barcode = barcodeGenerator(url)
+    return render(request, 'account/totp_code.html', context={
+        'url':url,
+        'barcode':barcode
+    })
+
 def image_registration(request):
     if request.method == 'POST':
         image = request.POST['autentication_image']
@@ -46,10 +70,38 @@ def image_registration(request):
         user.autentication_image = user_image
         user.save()
 
-        return HttpResponse('Photo successfully saved')
+        return redirect('users:otp-registration')
 
     # context = {
     #     'user':user
     # }
 
     return render(request, 'account/auth_image.html')
+
+
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        login(request, user)
+        return HttpResponse('Login succesful')
+
+    return render(request, 'account/login.html')
+
+
+@login_required
+def verify(request):
+    if request.method == 'POST':
+        token = request.POST['token']
+        user = request.user
+        device = TOTPDevice.objects.get(user=user)
+        if device.verify_token(token):
+            device.confirmed = True
+            device.save()
+            return HttpResponse('Verified')
+        else:
+            return HttpResponse('wrong token')
+
+    return render(request, 'account/otp_auth_form.html')
+    # return login(request, template_name='my_verify_template.html', authentication_form=form)

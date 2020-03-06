@@ -1,0 +1,32 @@
+{% extends "account/base.html" %} {% load i18n %} {% load static i18n %} {% load
+crispy_forms_tags %} {% block head_title %}{% trans "Signup" %}{% endblock %}
+{%block css%}
+  {{block.super}}
+
+<link href="{% static 'css/totp_code.css' %}" rel="stylesheet" />
+
+{% endblock %} {% block inner %}
+
+<div class="highlight-clean">
+  <div class="container">
+    <div class="intro">
+      <h2 class="text-center">Scan the Barcode using an OTP device( Google Authenticator)</h2>
+      <div>
+        <img
+          class="img-fluid d-md-flex flex-row justify-content-center align-items-center justify-content-md-center align-items-md-center"
+          style="margin: auto;"
+          data-aos="fade-left"
+          src="{{barcode}}"
+        />
+      </div>
+      <p class="text-center">{{url}}</p>
+    </div>
+    <div class="buttons">
+      <a class="btn btn-primary" role="button" href="#">Primary</a
+      ><button class="btn btn-light" type="button">
+        Download GOogle Authenticator
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %}

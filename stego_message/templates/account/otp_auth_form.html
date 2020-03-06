@@ -1,0 +1,21 @@
+{% extends "account/base.html" %}
+{% load i18n %}
+{% block head_title %}{% trans "Login" %}{% endblock %}
+
+{% block inner %}
+
+<form method="POST">
+  {% csrf_token %}
+  <div class="form-row">
+    <input
+    class="form-control"
+    type="text"
+    name="token"
+    placeholder="Enter OTP here"
+  /> </div>
+  <div class="submit-row">
+      <input type="submit" value="Log in"/>
+      <!-- {% if form.get_user %}<input type="submit" name="otp_challenge" value="Get Challenge" />{% endif %} -->
+  </div>
+</form>
+{% endblock %}
