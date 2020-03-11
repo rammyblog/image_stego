@@ -1,21 +1,36 @@
 {% extends "account/base.html" %}
-{% load i18n %}
-{% block head_title %}{% trans "Login" %}{% endblock %}
+{% load static i18n %}
+{% block head_title %}{% trans "OTP Challange " %}{% endblock %}
+
+{% block css %}
+  {{block.super}}
+  <link rel="stylesheet" href="{% static 'css/login.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/ionicons.min.css' %}" />
+
+{% endblock %}
 
 {% block inner %}
+<div class="login-clean">
+  <form method="post">
+    {% csrf_token %}
 
-<form method="POST">
-  {% csrf_token %}
-  <div class="form-row">
-    <input
-    class="form-control"
-    type="text"
-    name="token"
-    placeholder="Enter OTP here"
-  /> </div>
-  <div class="submit-row">
-      <input type="submit" value="Log in"/>
-      <!-- {% if form.get_user %}<input type="submit" name="otp_challenge" value="Get Challenge" />{% endif %} -->
-  </div>
-</form>
+    <h2 class="sr-only">Enter OTP below</h2>
+    <div class="illustration"><i class="fas fa-lock"></i></div>
+    <div class="form-group">
+      <input
+        class="form-control"
+        type="text"
+        name="token"
+        placeholder="Enter OTP here"
+      />
+    </div>
+    <div class="form-group">
+      <button class="btn btn-info btn-block" type="submit">
+        Log In
+      </button>
+    </div>
+    <!-- <a class="forgot" href="#">Forgot your email or password?</a> -->
+  </form>
+</div>
+
 {% endblock %}

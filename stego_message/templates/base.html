@@ -1,21 +1,20 @@
-{% load static i18n %}<!DOCTYPE html>
-<html lang="en">
+{% load static i18n %}
+<!DOCTYPE html>
+<html>
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <title>{% block title %}stego-message{% endblock title %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="" />
-    <meta name="author" content="" />
-
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
-    <![endif]-->
-
+    <meta name="author" content="Onasanya Tunde" />
     <link rel="icon" href="{% static 'images/favicons/favicon.ico' %}" />
 
     {% block css %}
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700"
+    />
 
     <!-- Latest compiled and minified Bootstrap CSS -->
     <link
@@ -24,109 +23,167 @@
       integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
       crossorigin="anonymous"
     />
-
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <!-- Your stuff: Third-party CSS libraries go here -->
 
     <!-- This file stores project-specific CSS -->
 
     <link href="{% static 'css/project.css' %}" rel="stylesheet" />
     <link href="{% static 'css/register.css' %}" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/stego_home.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}" />
 
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.css"
+    />
+    <script src="https://kit.fontawesome.com/833e0cadb7.js" crossorigin="anonymous"></script>
     {% endblock %}
-
   </head>
 
   <body>
-    <div class="mb-1">
-      <nav class="navbar navbar-expand-md navbar-light bg-light">
-        <button
-          class="navbar-toggler navbar-toggler-right"
-          type="button"
-          data-toggle="collapse"
-          data-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
+    <div>
+      <div class="header-blue">
+        <nav
+          class="navbar navbar-light navbar-expand-md navigation-clean-search"
         >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <a class="navbar-brand" href="{% url 'home' %}">stego-message</a>
+          <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'home' %}">Stego-Message</a
+            ><button
+              data-toggle="collapse"
+              class="navbar-toggler"
+              data-target="#navcol-1"
+            >
+              <span class="sr-only">Toggle navigation</span
+              ><span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navcol-1">
+              <ul class="nav navbar-nav">
+                <li class="nav-item" role="presentation">
+                  <a class="nav-link" href="#">Link</a>
+                </li>
+                {% comment %} {% if request.user.is_authenticated %}
+                <li class="nav-item">
+                  {# URL provided by django-allauth/account/urls.py #}
+                  <a
+                    class="nav-link"
+                    href="{% url 'users:detail' request.user.username  %}"
+                    >{% trans "My Profile" %}</a
+                  >
+                </li>
+                <li class="nav-item">
+                  {# URL provided by django-allauth/account/urls.py #}
+                  <a class="nav-link" href="{% url 'account_logout' %}"
+                    >{% trans "Sign Out" %}</a
+                  >
+                </li>
+                {% else %}
+                <li class="nav-item">
+                  {# URL provided by django-allauth/account/urls.py #}
+                  <a
+                    id="sign-up-link"
+                    class="nav-link"
+                    href="{% url 'account_signup' %}"
+                    >{% trans "Sign Up" %}</a
+                  >
+                </li>
+                <li class="nav-item">
+                  {# URL provided by django-allauth/account/urls.py #}
+                  <a
+                    id="log-in-link"
+                    class="nav-link"
+                    href="{% url 'account_login' %}"
+                    >{% trans "Sign In" %}</a
+                  >
+                </li>
+                {% endif %} {% endcomment %}
+                <li class="nav-item dropdown">
+                  <a
+                    class="dropdown-toggle nav-link"
+                    data-toggle="dropdown"
+                    aria-expanded="false"
+                    href="#"
+                    >Dropdown
+                  </a>
+                  <div class="dropdown-menu" role="menu">
+                    <a class="dropdown-item" role="presentation" href="#"
+                      >First Item</a
+                    ><a class="dropdown-item" role="presentation" href="#"
+                      >Second Item</a
+                    ><a class="dropdown-item" role="presentation" href="#"
+                      >Third Item</a
+                    >
+                  </div>
+                </li>
+              </ul>
+              <form class="form-inline mr-auto" target="_self">
+                <div class="form-group">
+                  <label for="search-field"><i class="fa fa-search"></i></label
+                  ><input
+                    class="form-control search-field"
+                    type="search"
+                    id="search-field"
+                    name="search"
+                  />
+                </div>
+              </form>
+              <span class="navbar-text">
+                <a class="login" href="{% url 'users:user-login'%}">Log In</a></span
+              >
+              <a class="btn btn-info action-button" role="button" href="#"
+                >Sign Up</a
+              >
+            </div>
+          </div>
+        </nav>
+        <div class="container hero">
+          {% if messages %} {% for message in messages %}
+          <div
+            class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}"
+          >
+            {{ message }}<button
+              type="button"
+              class="close"
+              data-dismiss="alert"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          {% endfor %} {% endif %}
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="{% url 'home' %}"
-                >Home <span class="sr-only">(current)</span></a
-              >
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'about' %}">About</a>
-            </li>
-            {% comment %} {% if request.user.is_authenticated %}
-            <li class="nav-item">
-              {# URL provided by django-allauth/account/urls.py #}
-              <a
-                class="nav-link"
-                href="{% url 'users:detail' request.user.username  %}"
-                >{% trans "My Profile" %}</a
-              >
-            </li>
-            <li class="nav-item">
-              {# URL provided by django-allauth/account/urls.py #}
-              <a class="nav-link" href="{% url 'account_logout' %}"
-                >{% trans "Sign Out" %}</a
-              >
-            </li>
-            {% else %}
-            <li class="nav-item">
-              {# URL provided by django-allauth/account/urls.py #}
-              <a
-                id="sign-up-link"
-                class="nav-link"
-                href="{% url 'account_signup' %}"
-                >{% trans "Sign Up" %}</a
-              >
-            </li>
-            <li class="nav-item">
-              {# URL provided by django-allauth/account/urls.py #}
-              <a
-                id="log-in-link"
-                class="nav-link"
-                href="{% url 'account_login' %}"
-                >{% trans "Sign In" %}</a
-              >
-            </li>
-            {% endif %} {% endcomment %}
-          </ul>
+          {% block content %}
+
+          <div class="row">
+            <div class="col-12 col-lg-6 col-xl-5 offset-xl-1">
+              <h1>The revolution is here.</h1>
+              <p>
+                Send encrypted messages as images over the internet with
+                ease.<br />
+              </p>
+              <button class="btn btn-info btn-lg action-button" type="button">
+                Learn More
+              </button>
+            </div>
+            <div
+              class="col-md-5 col-lg-5 offset-lg-1 offset-xl-0 d-none d-lg-block phone-holder"
+            >
+              <div class="iphone-mockup">
+                <img
+                  data-aos="fade-down"
+                  class="device"
+                  src="https://res.cloudinary.com/rammy/image/upload/f_auto,q_auto/v1583700534/37277.jpg"
+                />
+              </div>
+            </div>
+          </div>
+          {% endblock content %}
         </div>
-      </nav>
-    </div>
-
-    <div class="container">
-      {% if messages %} {% for message in messages %}
-      <div
-        class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}"
-      >
-        {{ message }}<button
-          type="button"
-          class="close"
-          data-dismiss="alert"
-          aria-label="Close"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      {% endfor %} {% endif %} {% block content %}
-      <p>Use this document as a way to quick start any new project.</p>
-      {% endblock content %}
-    </div>
-    <!-- /container -->
-
+        <!-- /container  -->
     {% block modal %}{% endblock modal %}
 
-    <!-- Le javascript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
+      </div>
+    </div>
     {% block javascript %}
 
     <!-- Bootstrap JS and its dependencies-->
@@ -153,5 +210,9 @@
     <script src="{% static 'js/project.js' %}"></script>
 
     {% endblock javascript %}
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+      AOS.init();
+    </script>
   </body>
 </html>

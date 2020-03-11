@@ -21,7 +21,7 @@ class UserProfile(models.Model):
     # bio = models.TextField(max_length=500, blank=True)
     # location = models.CharField(max_length=30, blank=True)
     # birth_date = models.DateField(null=True, blank=True)
-    autentication_image = models.ImageField(null=True, blank=True, upload_to='media/')
+    autentication_image = models.ImageField(null=True, blank=True, upload_to='auth-images')
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})

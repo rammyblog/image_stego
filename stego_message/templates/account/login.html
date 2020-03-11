@@ -1,14 +1,21 @@
 {% extends "account/base.html" %}
-{% load i18n %}
+{% load static i18n %}
 {% block head_title %}{% trans "Login" %}{% endblock %}
+
+{% block css %}
+  {{block.super}}
+  <link rel="stylesheet" href="{% static 'css/login.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/ionicons.min.css' %}" />
+
+{% endblock %}
 
 {% block inner %}
 <div class="login-clean">
   <form method="post">
     {% csrf_token %}
 
-    <h2 class="sr-only">Login Form</h2>
-    <div class="illustration"><i class="icon ion-ios-navigate"></i></div>
+    <h2 class="sr-only">Sign In</h2>
+    <div class="illustration"><i class="far fa-user"></i></div>
     <div class="form-group">
       <input
         class="form-control"
@@ -26,7 +33,7 @@
       />
     </div>
     <div class="form-group">
-      <button class="btn btn-primary btn-block" type="submit">
+      <button class="btn btn-info btn-block" type="submit">
         Log In
       </button>
     </div>

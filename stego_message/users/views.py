@@ -6,21 +6,16 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DetailView, RedirectView, UpdateView
 from .forms import UserCreationForm
-from .utils import convert64toImage
-from django.contrib.auth import authenticate, login,  logout
-
+from .utils import convert64toImage, face_rec_login, encoded_face
+from django.contrib.auth import authenticate, login, logout
 from .models import UserProfile
-
 from django.http import HttpResponse
-
-from functools import partial
-
 from django.contrib.auth.decorators import login_required
 from django_otp.forms import OTPTokenForm
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from django_otp import user_has_device
 from .qrcode_generator import barcodeGenerator
-
+from django.core.files.storage import default_storage
 
 def userRegistration(request):
 
@@ -58,24 +53,29 @@ def get_user_totp_device(request):
     url = device.config_url
     barcode = barcodeGenerator(url)
     return render(request, 'account/totp_code.html', context={
-        'url':url,
-        'barcode':barcode
+        'url': url,
+        'barcode': barcode
     })
+
 
 def image_registration(request):
     if request.method == 'POST':
         image = request.POST['autentication_image']
         user_image = convert64toImage(image, request.user.username)
         user = get_object_or_404(UserProfile, user=request.user)
-        user.autentication_image = user_image
-        user.save()
+        temppath = default_storage.save('temp.png', content=user_image)
+        temp_filepath = default_storage.path(temppath)
+        face_accepted = encoded_face(temp_filepath)
+        if face_accepted:
+            user.autentication_image = user_image
+            user.save()
+            default_storage.delete(temppath)
+            return redirect('users:otp-registration')
+        else:
+            default_storage.delete(temppath)
+            messages.error(request, 'Face Not decteted.')
 
-        return redirect('users:otp-registration')
-
-    # context = {
-    #     'user':user
-    # }
-
+        default_storage.delete(temppath)
     return render(request, 'account/auth_image.html')
 
 
@@ -84,24 +84,41 @@ def user_login(request):
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
-        login(request, user)
-        return HttpResponse('Login succesful')
+        if user is not None:
+            userProfile = get_object_or_404(UserProfile, user=user)
+            user_autentication_image = userProfile.autentication_image.path
+            facial_auth = face_rec_login(user_autentication_image, user.username)
+            if facial_auth:
+                login(request, user)
+                request.session['logged_in'] =  True
+                return redirect('users:user-login-verify')
+            else:
+                messages.error(request, 'Facial recognition failed')
+
+        else:
+            messages.error(request,'Login failed')
 
     return render(request, 'account/login.html')
 
 
 @login_required
 def verify(request):
-    if request.method == 'POST':
-        token = request.POST['token']
-        user = request.user
-        device = TOTPDevice.objects.get(user=user)
-        if device.verify_token(token):
-            device.confirmed = True
-            device.save()
-            return HttpResponse('Verified')
-        else:
-            return HttpResponse('wrong token')
+
+    try:
+        user_just_logged_in = request.session['logged_in']
+        if request.method == 'POST' and user_just_logged_in:
+            token = request.POST['token']
+            user = request.user
+            device = TOTPDevice.objects.get(user=user)
+            if device.verify_token(token):
+                device.confirmed = True
+                device.save()
+                return HttpResponse('Verified')
+            else:
+                messages.error(request, 'Wrong token')
+
+    except KeyError:
+        return redirect('home')
 
     return render(request, 'account/otp_auth_form.html')
     # return login(request, template_name='my_verify_template.html', authentication_form=form)
