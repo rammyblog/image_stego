@@ -17,6 +17,15 @@ from django_otp import user_has_device
 from .qrcode_generator import barcodeGenerator
 from django.core.files.storage import default_storage
 
+
+@login_required
+def user_dashboard(request):
+    context = {
+        'user': request.user
+    }
+    return render(request, 'users/user_detail.html', context)
+
+
 def userRegistration(request):
 
     if request.method == 'POST':
@@ -90,13 +99,13 @@ def user_login(request):
             facial_auth = face_rec_login(user_autentication_image, user.username)
             if facial_auth:
                 login(request, user)
-                request.session['logged_in'] =  True
+                request.session['logged_in'] = True
                 return redirect('users:user-login-verify')
             else:
                 messages.error(request, 'Facial recognition failed')
 
         else:
-            messages.error(request,'Login failed')
+            messages.error(request, 'Login failed')
 
     return render(request, 'account/login.html')
 
@@ -113,7 +122,8 @@ def verify(request):
             if device.verify_token(token):
                 device.confirmed = True
                 device.save()
-                return HttpResponse('Verified')
+                return redirect('users:user-dashboard')
+
             else:
                 messages.error(request, 'Wrong token')
 

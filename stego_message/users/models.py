@@ -24,7 +24,7 @@ class UserProfile(models.Model):
     autentication_image = models.ImageField(null=True, blank=True, upload_to='auth-images')
 
     def get_absolute_url(self):
-        return reverse("users:detail", kwargs={"username": self.username})
+        return reverse("users:detail", kwargs={"username": self.user.username})
 
     def __str__(self):
         return self.user.username
@@ -34,6 +34,7 @@ class UserProfile(models.Model):
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         UserProfile.objects.create(user=instance)
+
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):

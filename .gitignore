@@ -287,3 +287,7 @@ stego_message/media/
 .env
 .envs/*
 !.envs/.local/
+
+
+.images/
+images/

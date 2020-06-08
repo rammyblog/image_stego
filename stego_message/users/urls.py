@@ -5,7 +5,8 @@ from stego_message.users.views import (
     image_registration,
     user_login,
     verify,
-    get_user_totp_device
+    get_user_totp_device,
+    user_dashboard
     # user_redirect_view,
     # user_update_view,
 )
@@ -16,7 +17,8 @@ urlpatterns = [
     path("register/image", view=image_registration, name="user-image-registration"),
     path("login/", view=user_login, name="user-login"),
     path("login/verify", view=verify, name="user-login-verify"),
-    path('otp/registration/', view=get_user_totp_device, name='otp-registration')
+    path('otp/registration/', view=get_user_totp_device, name='otp-registration'),
+    path('dashboard', view=user_dashboard, name='user-dashboard')
 
 
 

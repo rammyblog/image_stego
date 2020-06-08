@@ -76,6 +76,8 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "stego_message.users.apps.UsersConfig",
+    "message_module.apps.MessageModuleConfig",
+    # "message_module"
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
