@@ -1,20 +1,21 @@
-{% extends "base.html" %} {% load static %} {% block title %}User: {{ user }}{% endblock %}
-
-{% block content %}
-<div class="container">
-  <div class="row">
+{% extends "users/dashboard_base.html" %}
+{% load static %} {% block title %}User: {{ user }}{% endblock %}
+ {% block content %}
+<div class="section-admin container-fluid">
+  <div class="row  admin text-center">
     <div class="col-sm-12">
       <h2>{{ user.username }}</h2>
       {% if user.first_name %}
       <p>{{ user.name }}</p>
       {% endif %}
     </div>
-  </div>
+
 
   {% if user == request.user %}
   <!-- Action buttons -->
   <div class="row">
     <div class="col-sm-12">
+
       {% comment %} <a class="btn btn-primary" href="{% url 'users:update' %}" role="button"
         >My Info</a
       > {% endcomment %}
@@ -22,10 +23,12 @@
         >E-Mail</a
       > {% endcomment %}
       <!-- Your Stuff: Custom user template urls -->
-      <a class='btn btn-primary' href='messages:create-message'>Send Message</a>
+      <a class="btn btn-primary" href="{% url 'messages:create-message' %}">Send Message</a>
     </div>
   </div>
   <!-- End Action buttons -->
   {% endif %}
 </div>
+</div>
+
 {% endblock content %}

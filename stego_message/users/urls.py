@@ -18,7 +18,7 @@ urlpatterns = [
     path("login/", view=user_login, name="user-login"),
     path("login/verify", view=verify, name="user-login-verify"),
     path('otp/registration/', view=get_user_totp_device, name='otp-registration'),
-    path('dashboard', view=user_dashboard, name='user-dashboard')
+    path('dashboard/', view=user_dashboard, name='user-dashboard')
 
 
 

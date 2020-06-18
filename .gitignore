@@ -291,3 +291,6 @@ stego_message/media/
 
 .images/
 images/
+admintemplate
+admintemplate/
+.admintemplate/

@@ -12,10 +12,11 @@ class CreateMesageView(CreateView):
     form_class = SendMessageForm
     template_name = 'message_module/send_message.html'
 
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     # context["messages"] = Message.objects.filter(sender=request.user)
-    #     return context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        print(context)
+        # context["messages"] = Message.objects.filter(sender=request.user)
+        return context
 
     def form_valid(self, form):
         message = form.save()
